@@ -53,7 +53,10 @@ RUN sed -i -e "s!@RAILS_ROOT_DIR!${RAILS_ROOT_DIR}!g" \
            /etc/monit/conf-available/rails \
            /etc/monit/conf-available/delayed_job
 
+# bundle default config
 RUN mkdir /var/www && chown www-data:www-data /var/www
+RUN bundle config set path vendor/bundle \
+ && su www-data -c "bundle config set path vendor/bundle"
 
 # bundle default config
 RUN mkdir /var/www && chown www-data:www-data /var/www
