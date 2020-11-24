@@ -1,0 +1,6 @@
+eval_gemfile 'Gemfile.default'
+
+group :development, :test do
+  gem 'ruby-debug-ide'
+  gem 'debase'
+end

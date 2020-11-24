@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  stock_api_revproxy:
+    extends:
+      file: docker-compose-base.yml
+      service: stock_api_revproxy
+

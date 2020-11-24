@@ -1,0 +1,58 @@
+version: '2'
+
+services:
+  stock_api_mocksmtp:
+    container_name: stock_api_mocksmtp
+    image: pocari/mailcatcher
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+
+  stock_api_rails:
+    container_name: stock_api_rails
+    build:
+      context: $RAILS_WEBAPP_DOCKERFILE_DIR
+      args:
+        - rails_port=$RAILS_PORT
+        - rails_app_mount_to=$RAILS_APP_MOUNT_TO
+        - scripts_copy_to=$SCRIPTS_MOUNT_TO
+        - external_files_mount_to=$EXTERNAL_FILES_MOUNT_TO
+    image: 192.168.1.165:5002/stock_api_rails
+    ports:
+      - "$RAILS_PORT:$RAILS_PORT"
+      - "1235:1235"
+    volumes:
+      - ${RAILS_APP_ROOT_DIR}:${RAILS_APP_MOUNT_TO}
+      - ${EXTERNAL_FILES_ROOT_DIR}:${EXTERNAL_FILES_MOUNT_TO}
+    environment:
+      DEBUG                   :
+      ASSETS_DEBUG            :
+      DOCKER_HOST_HOSTNAME    :
+      RAILS_ENV               : $RAILS_APP_ENV
+      APP_DOMAIN              :
+      ENABLE_DELAYED_JOB      :
+      ENABLE_DELAYED_JOB_RESERVE_LOG:
+      SMTP_HOST               :
+      SMTP_PORT               :
+      SMTP_USER_NAME          :
+      SMTP_PASSWORD           :
+      USER_NOTIFY_MAIL_FROM   :
+      ADMIN_NOTIFY_MAIL_TO    :
+      DEVELOPER_NOTIFY_MAIL_TO:
+      DEVISE_MAIL_REPLY_TO    :
+      RAILS_PORT              :
+    command: ${SCRIPTS_MOUNT_TO}/start_webapp.sh $DEBUG
+
+  stock_api_revproxy:
+    container_name: stock_api_revproxy
+    image: neogenia/ez-gate:20201119
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ${REVPROXY_ROOT_DIR}/mnt:/mnt/
+    environment:
+      PROXY_TO: localhost,stock_api_rails:$RAILS_PORT
+      CERT_FILE: /mnt/cert.pem
+      KEY_FILE: /mnt/key.pem
+      DEBUG: 1

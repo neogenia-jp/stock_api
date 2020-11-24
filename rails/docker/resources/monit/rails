@@ -1,0 +1,7 @@
+check process rails with pidfile "@RAILS_ROOT_DIR/tmp/puma.pid"
+      start program = "@SCRIPTS_ROOT_DIR/start_rails_app.sh"
+            as uid www-data and gid www-data
+            with timeout 180 seconds
+      stop program  = "@SCRIPTS_ROOT_DIR/stop_rails_app.sh"
+            as uid www-data and gid www-data
+            with timeout 180 seconds

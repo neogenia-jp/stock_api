@@ -1,0 +1,17 @@
+version: '2'
+
+volumes:
+  node_modules:
+    driver: local
+  rails_vendor:
+    driver: local
+
+services:
+  stock_api_rails:
+    extends:
+      file: docker-compose-base.yml
+      service: stock_api_rails
+    volumes:
+      - rails_vendor:${RAILS_APP_MOUNT_TO}/vendor
+      - node_modules:${RAILS_APP_MOUNT_TO}/node_modules
+

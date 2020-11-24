@@ -1,0 +1,7 @@
+check process delayed_job with pidfile "@RAILS_ROOT_DIR/tmp/pids/delayed_job.pid"
+      start program = "@RAILS_ROOT_DIR/bin/delayed_job start"
+            as uid www-data and gid www-data
+            with timeout 180 seconds
+      stop program  = "@RAILS_ROOT_DIR/bin/delayed_job stop"
+            as uid www-data and gid www-data
+            with timeout 180 seconds

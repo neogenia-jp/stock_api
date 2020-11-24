@@ -1,0 +1,13 @@
+ja:
+  hello: "Hello world"
+
+  time:
+    am: 午前
+    formats:
+      default: "%Y/%m/%d %H:%M:%S"
+      long: "%Y年%m月%d日(%a) %H時%M分%S秒 %z"
+      long2: "%Y年%-m月%-d日 %-H時%-M分"
+      short: "%y/%m/%d %H:%M"
+      long_tz: "%Y/%m/%d (%a) %H:%M:%S (%z)"
+      yyyymmdd_hhmmss: "%Y%m%d_%H%M%S"
+    pm: 午後
