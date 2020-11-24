@@ -84,12 +84,15 @@ namespace :fs do
   DIRS = %w[
     $RAILS_APP_ROOT_DIR/tmp
     $RAILS_APP_ROOT_DIR/log
+    $RAILS_APP_ROOT_DIR/config
+    $RAILS_APP_ROOT_DIR/public/packs
+    $RAILS_APP_ROOT_DIR/.bundle
   ]
 
   DIRS.each do |dir_def|
     dir_path = env_extract dir_def
-    directory dir_path
     task dir_def do
+      mkdir dir_path unless Dir.exist? dir_path
       chmod 0777, dir_path
     end
   end
