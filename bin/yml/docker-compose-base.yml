@@ -17,7 +17,7 @@ services:
         - rails_app_mount_to=$RAILS_APP_MOUNT_TO
         - scripts_copy_to=$SCRIPTS_MOUNT_TO
         - external_files_mount_to=$EXTERNAL_FILES_MOUNT_TO
-    image: 192.168.1.165:5002/stock_api_rails
+    image: stock_api_rails
     ports:
       - "$RAILS_PORT:$RAILS_PORT"
       - "1235:1235"
