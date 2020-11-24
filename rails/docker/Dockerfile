@@ -55,9 +55,17 @@ RUN sed -i -e "s!@RAILS_ROOT_DIR!${RAILS_ROOT_DIR}!g" \
 
 RUN mkdir /var/www && chown www-data:www-data /var/www
 
+# bundle default config
+RUN mkdir /var/www && chown www-data:www-data /var/www
+RUN bundle config set path vendor/bundle \
+ && su www-data -c "bundle config set path vendor/bundle"
+
 VOLUME $external_files_mount_to
 VOLUME $rails_app_mount_to
 WORKDIR $rails_app_mount_to
 
 ARG rails_port=8079
 EXPOSE $rails_port 1235 26163
+
+ENV SECRET_KEY_BASE=00000000
+
