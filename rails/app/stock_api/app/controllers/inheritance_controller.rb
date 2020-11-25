@@ -1,6 +1,7 @@
 require 'nokogiri'
 
 class InheritanceController < ApplicationController
+  skip_forgery_protection  # CSRF検証を無効化
 
   def query
     codes = params[:codes].split(',')
@@ -17,7 +18,7 @@ class InheritanceController < ApplicationController
   end
 
   def create_xml(codes, q0, q1, q2)
-    Nokogiri::XML::Builder.new do |xml|
+    Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
       xml.results do
         codes.each do |code|
           q = (q0[code] || q1[code] || q2[code])&.first  # 代表データを検索
