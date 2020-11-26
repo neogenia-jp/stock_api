@@ -37,6 +37,7 @@ export DEVELOPER_NOTIFY_MAIL_TO='neogenia.dev@gmail.com'
 # Puma の待受ポート番号
 export RAILS_PORT=8079
 
+export STOCK_PRICE_BASE_URL=
 
 #############################################################################
 # domain(変更した場合, stock_api_revproxyのコンテナリビルドが必要)

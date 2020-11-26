@@ -41,6 +41,7 @@ services:
       DEVELOPER_NOTIFY_MAIL_TO:
       DEVISE_MAIL_REPLY_TO    :
       RAILS_PORT              :
+      STOCK_PRICE_BASE_URL    :
     command: ${SCRIPTS_MOUNT_TO}/start_webapp.sh $DEBUG
 
   stock_api_revproxy:
