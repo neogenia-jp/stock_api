@@ -200,6 +200,10 @@ namespace :rails do
 
   desc 'Rails のDBマイグレーション実行します'
   task db_migrate: %w|bundle_install| do
+    db_dir = env_extract '$RAILS_APP_ROOT_DIR/db/'
+    sh %Q!chmod 666 #{db_dir}/*.sqlite3!
+    schema = env_extract '$RAILS_APP_ROOT_DIR/db/schema.rb'
+    chmod 0666, schema if File.exist? schema
     de '-t -u www-data stock_api_rails bin/rails db:migrate'
   end
 
@@ -243,7 +247,7 @@ namespace :init do
   task production: %w|submodule:init init:fs compose:down| do
     log = env_extract '$RAILS_APP_ROOT_DIR/log/production.log'
     if File.exist? log
-      chmod 777, log
+      chmod 0777, log
     end
   end
 end
