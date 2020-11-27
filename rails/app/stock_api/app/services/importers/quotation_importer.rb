@@ -33,24 +33,31 @@ class Importers::QuotationImporter
     cnt
   end
 
+  private
+
+  # CSVデータからモデルを生成する
+  # @param csv_data [CSV::Table]
+  # @return [Enumerator<StockQuotation>]
   def generate_models(csv_data)
-    last = nil
+    idx_open_day = csv_data.headers.find_index('始値') + 1
+    idx_close_day = csv_data.headers.find_index('終値') + 1
+
     Enumerator.new do |y|
       csv_data.each do |data|
         model = StockQuotation.new(
             m: "#{data['年月']}/01".to_date,
-            code: data['銘柄コード']&.gsub(/　普通株式/, ''),
-            name: data['銘柄名称'],
+            code: data['銘柄コード'],
+            name: data['銘柄名称']&.gsub(/　普通株式/, ''),
             open: data['始値'],
+            open_day: data[idx_open_day],
             high: data['高値'],
             low: data['安値'],
             close: data['終値'],
+            close_day: data[idx_close_day],
             avg_closing: data['終値平均']
           )
         next if model.avg_closing.blank?  # 終値平均がないデータは無視
-        next if model.code == last&.code  # 証券コードの重複排除
         y.yield model
-        last = model
       end
     end
   end
