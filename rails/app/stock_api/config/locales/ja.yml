@@ -46,3 +46,5 @@ ja:
         other: "%{model}に%{count}個のエラーが発生しました"
     stocks:
       stock_splitted: エラー：株式分割が行われた可能性があります
+      too_many_hits: エラー：検索結果が複数あります
+      not_found: "エラー：該当するデータが見つかりません '%{word}'."

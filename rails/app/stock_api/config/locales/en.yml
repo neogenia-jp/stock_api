@@ -35,3 +35,5 @@ en:
   errors:
     stocks:
       stock_splitted: 'ERROR: A stock split may have taken place'
+      too_many_hits: 'ERROR: Multiple search results'
+      not_found: "code '%{word}' not found."
