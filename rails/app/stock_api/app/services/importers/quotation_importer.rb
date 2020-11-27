@@ -44,10 +44,12 @@ class Importers::QuotationImporter
 
     Enumerator.new do |y|
       csv_data.each do |data|
+        name = data['銘柄名称']&.gsub(/　普通株式/, '')
         model = StockQuotation.new(
             m: "#{data['年月']}/01".to_date,
             code: data['銘柄コード'],
-            name: data['銘柄名称']&.gsub(/　普通株式/, ''),
+            name: name,
+            normalized_name: Util::StringNormalizer.normalize(name),
             open: data['始値'],
             open_day: data[idx_open_day],
             high: data['高値'],

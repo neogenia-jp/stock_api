@@ -234,6 +234,7 @@ GEM
     timecop (0.9.2)
     tzinfo (1.2.8)
       thread_safe (~> 0.1)
+    unicode (0.4.4.4)
     unicode-display_width (0.1.1)
     warden (1.2.9)
       rack (>= 2.0.9)
@@ -296,6 +297,7 @@ DEPENDENCIES
   sqlite3 (~> 1.4)
   timecop
   tzinfo-data
+  unicode (>= 0.4.0)
   web-console (>= 3.3.0)
   webdrivers (~> 4.0)
   webpacker (~> 4.0)

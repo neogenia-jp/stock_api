@@ -45,6 +45,9 @@ gem 'delayed_job', '~> 4.1.4'
 gem 'delayed_job_active_record', '~> 4.1.1'
 gem 'daemons', '~> 1.2.3'
 
+# Unicode正規化ライブラリ
+gem 'unicode', '>= 0.4.0'
+
 # ログローテション
 gem 'chrono_logger'
 
