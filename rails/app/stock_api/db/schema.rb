@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_24_064620) do
+ActiveRecord::Schema.define(version: 2020_11_27_152131) do
 
   create_table "categories", force: :cascade do |t|
     t.string "name", null: false
@@ -108,6 +108,16 @@ ActiveRecord::Schema.define(version: 2020_11_24_064620) do
     t.index ["category_id"], name: "index_products_on_category_id"
   end
 
+  create_table "stock_prices", id: false, force: :cascade do |t|
+    t.string "code", null: false
+    t.date "dt", null: false
+    t.decimal "close"
+    t.decimal "normalized"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["code", "dt"], name: "index_stock_prices_on_code_and_dt", unique: true
+  end
+
   create_table "stock_quotations", id: false, force: :cascade do |t|
     t.string "code"
     t.date "m"
@@ -119,7 +129,10 @@ ActiveRecord::Schema.define(version: 2020_11_24_064620) do
     t.decimal "avg_closing"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["code", "m"], name: "index_stock_quotations_on_code_and_m", unique: true
+    t.integer "open_day", default: 1, null: false
+    t.integer "close_day"
+    t.string "normalized_name", default: "", null: false
+    t.index ["code", "m", "open_day"], name: "index_stock_quotations_on_code_and_m_and_open_day", unique: true
   end
 
   add_foreign_key "estimate_details", "estimates", on_delete: :cascade
