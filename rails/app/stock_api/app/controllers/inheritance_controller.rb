@@ -39,11 +39,14 @@ class InheritanceController < ApplicationController
       xml.results do
         codes.each do |code|
           q = (q0[code] || q1[code] || q2[code])&.first  # 代表データを検索
+          for_month = q0.single(code, :avg_closing, err_msg) # 当月の月間平均
+          closing_price = for_month==err_msg ? err_msg : ps[code] # 月間平均がエラーならその日の終値もエラーにする
+
           xml.record do
             xml.code code
             xml.name q&.name
-            xml.closing_price ps[code]
-            xml.for_month q0.single(code, :avg_closing, err_msg)
+            xml.closing_price closing_price
+            xml.for_month for_month
             xml.for_previous_month q1.single(code, :avg_closing, err_msg)
             xml.for_previous_two_months q2.single(code, :avg_closing, err_msg)
             xml.error "code '#{code}' not found." unless q
