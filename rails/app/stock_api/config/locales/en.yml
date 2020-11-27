@@ -31,3 +31,7 @@
 
 en:
   hello: "Hello world"
+
+  errors:
+    stocks:
+      stock_splitted: 'ERROR: A stock split may have taken place'

@@ -10,10 +10,10 @@ class InheritanceController < ApplicationController
     dt1 = dt0 - 1.month
     dt2 = dt0 - 2.month
 
+    q0 = StockQuotation.get_grouped(codes, dt0)
+    q1 = StockQuotation.get_grouped(codes, dt1)
+    q2 = StockQuotation.get_grouped(codes, dt2)
     ps = _get_closing_prices codes, dt
-    q0 = StockQuotation.where(code: codes).where(m: dt0).to_a.group_by(&:code)
-    q1 = StockQuotation.where(code: codes).where(m: dt1).to_a.group_by(&:code)
-    q2 = StockQuotation.where(code: codes).where(m: dt2).to_a.group_by(&:code)
 
     render xml: _create_xml(codes, ps, q0, q1, q2)
   end
@@ -33,6 +33,8 @@ class InheritanceController < ApplicationController
   end
 
   def _create_xml(codes, ps, q0, q1, q2)
+    err_msg = I18n.t 'errors.stocks.stock_splitted'
+
     Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
       xml.results do
         codes.each do |code|
@@ -41,9 +43,9 @@ class InheritanceController < ApplicationController
             xml.code code
             xml.name q&.name
             xml.closing_price ps[code]
-            xml.for_month q0[code]&.first&.avg_closing
-            xml.for_previous_month q1[code]&.first&.avg_closing
-            xml.for_previous_two_months q2[code]&.first&.avg_closing
+            xml.for_month q0.single(code, :avg_closing, err_msg)
+            xml.for_previous_month q1.single(code, :avg_closing, err_msg)
+            xml.for_previous_two_months q2.single(code, :avg_closing, err_msg)
             xml.error "code '#{code}' not found." unless q
           end
         end
