@@ -25,7 +25,8 @@ class StockQuotation < ApplicationRecord
         else
           # 名称で部分一致検索
           result = StockQuotation.normalized_name_and_month(normalized, month)
-          case result.count <=> 1
+          code = result.pluck(:code).uniq
+          case code.count <=> 1
           when 0  # 1件だけヒットしたとき
             h[word] = result
           when 1  # 複数件ヒットしたとき
@@ -45,7 +46,7 @@ class StockQuotation < ApplicationRecord
       # 戻り値に single() というメソッドを生やす
       h.define_singleton_method(:single) do |key, method=nil, error_msg=nil|
         a = h[key]
-        if a.nil?
+        if a.nil? || a.is_a?(Symbol)
           nil
         elsif a.count >= 2
           if method
