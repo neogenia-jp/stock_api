@@ -75,3 +75,10 @@ revproxy/run_mkcert.sh 192.168.59.105
 
 これで、ブラウザにて `https://192.168.59.105/` とアクセスしてもHTTPS証明書エラーが出ないようになります。
 
+## 取り込み処理のcron登録
+
+```
+# 毎月7日〜12日の 10時、19時 ただし月曜〜金曜のみ
+1 10,19 7-12 * 1-5  docker exec stock_api_rails bin/rails batch:quotations:load[`date '+\%Y\%m' --date '1 month ago'`]
+```
+
