@@ -21,6 +21,7 @@ class Scraping::StockPriceScraper < BaseService
     document = Nokogiri::HTML.parse(html.body)
 
     _extract_stock_prices(document).map do |ymd_str, close_str, normalized_str|
+      next unless close_str
       StockPrice.new code: code, dt: _parse_date(ymd_str), close: _parse_decimal(close_str), normalized: _parse_decimal(normalized_str)
     end.to_a
   end
@@ -37,9 +38,12 @@ class Scraping::StockPriceScraper < BaseService
   def _extract_stock_prices(document)
     rows = document.xpath %q|//table[@class="boardFin yjSt marB6"]//tr|
     Enumerator.new do |y|
+      last_ymd = nil
       rows.drop(1).reverse_each do |tr|
         ymd = tr.children.first.text
-        y.yield [ymd, tr.children[-3].text, tr.children.last.text]
+        next if ymd == last_ymd
+        y.yield [ymd, tr.children[-3]&.text, tr.children.last&.text]
+        last_ymd = ymd
       end
     end
   end
