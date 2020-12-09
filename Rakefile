@@ -3,7 +3,7 @@ def env_sh(cmd)
 end
 
 def env_extract(env_var_exp)
-  `SCRIPT_DIR=bin/ source bin/common.sh && echo #{env_var_exp}`.chomp
+  `SCRIPT_DIR=bin/ bash -c 'source bin/common.sh && echo #{env_var_exp}'`.chomp
 end
 
 def env_get(env_var_name)
@@ -108,13 +108,22 @@ namespace :compose do
     dc 'all-in-one', 'down'
   end
 
+  desc '環境変数の設定が正しく行われているかチェックします。'
+  task env_check: [] do
+    unless env_get :STOCK_PRICE_BASE_URL
+      puts "STOCK_PRICE_BASE_URL が設定されていません。"
+      exit 1
+    end
+    puts 'env_check: OK'
+  end
+
   desc 'リバースプロキシコンテナを起動します'
   task up_front: [] do
     dc_up :revproxy
   end
 
   desc 'Railsコンテナを通常起動します'
-  task up_rails: [] do
+  task up_rails: %w|env_check| do
     dc_up 'all-in-one', :stock_api_rails
   end
 
@@ -126,12 +135,12 @@ namespace :compose do
   end
 
   desc 'ローカル開発用コンテナ構成を起動します'
-  task up_all: [] do
+  task up_all: %w|env_check| do
     dc_up 'all-in-one'
   end
 
   desc 'ローカル開発用コンテナ構成をデバッグモードで起動します'
-  task up_debug: [] do
+  task up_debug: %w|env_check| do
     ddc_up 'all-in-one'
   end
 
@@ -172,6 +181,7 @@ namespace :rails do
     puts "CONFIG:"
     puts "  RAILS_APP_ENV: #{env_get :RAILS_APP_ENV}"
     puts "  ASSETS_DEBUG:  #{env_get :ASSETS_DEBUG}"
+    puts "  STOCK_PRICE_BASE_URL:  #{env_get :STOCK_PRICE_BASE_URL}"
     s = get_container_status 'stock_api_rails'
     puts "CONTAINER: #{s}"
     next if s != 'running'
@@ -189,12 +199,12 @@ namespace :rails do
   end
 
   desc 'Rails をデバッグ実行します'
-  task debug: %w|compose:ensure_rails| do
+  task debug: %w|compose:env_check compose:ensure_rails| do
     de '-ti stock_api_rails /var/scripts/start_debug_webapp.sh'
   end
 
   desc 'Rails をリモートデバッグで実行します'
-  task remote_debug: %w|compose:ensure_rails| do
+  task remote_debug: %w|compose:env_check compose:ensure_rails| do
     de '-ti stock_api_rails /var/scripts/start_remote_debug_webapp.sh'
   end
 
