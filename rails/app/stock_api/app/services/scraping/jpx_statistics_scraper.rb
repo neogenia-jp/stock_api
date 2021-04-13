@@ -10,7 +10,7 @@ class Scraping::JpxStatisticsScraper < BaseService
   def get_st_links(yyyymm)
     raise "Invalid date format. expected format is 'yyyymm', but actual: '#{yyyymm}'" unless yyyymm.match /^\d{6}$/
     yyyy = "#{yyyymm}01".to_date.year
-    current_y = Time.now.year
+    current_y = (Time.now - 1.month).year    # 1月中はアーカイブページを見に行かないようにする
     url = "#{BASE_URL}/markets/statistics-equities/price/"
     url += current_y == yyyy ? "index.html" : "00-archives-%02d.html"%[current_y - yyyy]
 
