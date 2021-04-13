@@ -12,6 +12,9 @@ ENV LANG ja_JP.UTF-8
 ENV LANGUAGE ja_JP:en
 ENV LC_ALL ja_JP.UTF-8
 
+# update publick key for yarnpkg.com
+# https://qiita.com/GandT/items/763c48f0aadbfff1e638
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 
 #####################################################
 # install sqlite3 and more

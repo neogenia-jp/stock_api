@@ -38,6 +38,7 @@ export DEVELOPER_NOTIFY_MAIL_TO='neogenia.dev@gmail.com'
 export RAILS_PORT=8079
 
 export STOCK_PRICE_BASE_URL=
+export CHECK_STOCK_MARKET_URL=
 
 #############################################################################
 # domain(変更した場合, stock_api_revproxyのコンテナリビルドが必要)

@@ -3,6 +3,13 @@ require 'open-uri'
 class Scraping::StockPriceScraper < BaseService
   DEFAULT_DAYS_OF_RANGE = 14
 
+  # 市場を表すアルファベット一文字を取得する
+  def get_stock_market(code)
+    url = "#{check_market_base_url}/#{code}"
+    response = `curl --silent '#{url}'`
+    response[-1]
+  end
+
   # 日付を指定して前後n日間の株価をスクレイピングする
   # @param code [String] 証券コード
   # @param target_date [Date] 検索対象日
@@ -11,7 +18,7 @@ class Scraping::StockPriceScraper < BaseService
   def scrape_around_by_date(code, target_date, days_of_range)
     s = target_date - days_of_range.day
     e = target_date + days_of_range.day
-    url = "#{base_url}?code=#{code}&sy=#{s.year}&sm=#{s.month}&sd=#{s.day}&ey=#{e.year}&em=#{e.month}&ed=#{e.day}&tm=d"
+    url = "#{base_url}?code=#{code}.#{get_stock_market code}&fy=#{s.year}&fm=#{s.month}&fd=#{s.day}&ty=#{e.year}&tm=#{e.month}&td=#{e.day}&cp=d"
 
     # Nokogiri::HTML::Documentを取得する
     html = logger.debug_scope "web accessing to '#{url}' ..." do
@@ -32,11 +39,15 @@ class Scraping::StockPriceScraper < BaseService
     ENV.fetch 'STOCK_PRICE_BASE_URL'
   end
 
+  def check_market_base_url
+    ENV.fetch 'CHECK_STOCK_MARKET_URL'
+  end
+
   # HTMLより株価情報を抽出する
   # @param document [Nokogiri::HTML::Document] HTMLドキュメント
   # @return [Enumerator<Array<String>>]  [日付, 終値, 調整後終値]の配列 例: [['2020年11月9日', '250', '125'], ...]
   def _extract_stock_prices(document)
-    rows = document.xpath %q|//table[@class="boardFin yjSt marB6"]//tr|
+    rows = document.xpath %q|//table[@class="tableFin"]//tr|
     Enumerator.new do |y|
       last_ymd = nil
       rows.drop(1).reverse_each do |tr|
@@ -53,7 +64,7 @@ class Scraping::StockPriceScraper < BaseService
   end
 
   def _parse_date(date_text)
-    ymd = date_text.split(/[年月日]/).map(&:to_i)
+    ymd = date_text.split(/\D/).map(&:to_i)
     Date.new ymd[0], ymd[1], ymd[2]
   end
 

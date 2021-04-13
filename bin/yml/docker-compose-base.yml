@@ -42,6 +42,7 @@ services:
       DEVISE_MAIL_REPLY_TO    :
       RAILS_PORT              :
       STOCK_PRICE_BASE_URL    :
+      CHECK_STOCK_MARKET_URL  :
     command: ${SCRIPTS_MOUNT_TO}/start_webapp.sh $DEBUG
 
   stock_api_revproxy:
