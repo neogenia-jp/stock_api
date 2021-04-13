@@ -248,6 +248,7 @@ namespace :init do
 
   desc 'DBを初期化します'
   task db: %w|| do
+    de "-ti -u www-data stock_api_rails bin/rails db:drop db:setup"
   end
 
   desc '開発環境用に必要な初期化を全て行います(fs, db, container)'
