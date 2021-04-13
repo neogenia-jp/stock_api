@@ -169,6 +169,7 @@ namespace :rails do
   desc 'Rails コンテナで bundle install を実行します'
   task bundle_install: %w|compose:ensure_rails| do
     de '-t -u www-data stock_api_rails bundle install'
+    de '-t -u www-data stock_api_rails yarn install --check-files'
   end
 
   desc 'Rails コンテナですべてのテストを実行します'
