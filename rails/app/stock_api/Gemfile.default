@@ -25,6 +25,8 @@ gem 'jbuilder', '~> 2.7'
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 
+gem 'mimemagic', '~> 0.3.7'
+
 # migrationは複合主キー対応されているが、modelについては依然composite_primary_keysが必要なので追加
 gem 'composite_primary_keys', '~> 12.0.0'
 
