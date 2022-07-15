@@ -12,7 +12,7 @@ rake init:development
 rake compose:up_all
 ```
 
-データ取込
+### データ取込
 
 ```sh
 rake rails:bash
@@ -26,7 +26,7 @@ bin/rails batch:quotations:load[202008]
 データ取り込みが完了したら、ブラウザで以下のURLにアクセスしてみて下さい。
 `https://${docker_host}/inheritance?date=20201024&codes=1301`
 
-株価取得
+### 株価取得
 
 Railsコンソール起動
 ```sh
@@ -36,6 +36,15 @@ rake rails:c
 ```rb
 f = Stocks::StockPriceFinder.new
 f.get_stock_price_by_date '1301', Date.new(2021,10,15)
+```
+
+### curl コマンドでテストする場合
+POSTで /inheritance を呼んで下さい。
+パラメータとして、`codes` `date` が必須です。
+
+実行例:
+```sh
+curl -X POST --data-urlencode 'codes=1301' --data-urlencode 'date=2021-10-01' http://localhost:8079/inheritance
 ```
 
 ## コンテナへのアタッチ方法
