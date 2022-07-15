@@ -5,6 +5,8 @@
 
 ## Usage
 
+事前に `env_app.sh` に環境変数を適切に設定しておく必要があります。
+
 起動
 
 ```sh
@@ -12,7 +14,7 @@ rake init:development
 rake compose:up_all
 ```
 
-データ取込
+### データ取込
 
 ```sh
 rake rails:bash
@@ -26,12 +28,33 @@ bin/rails batch:quotations:load[202008]
 データ取り込みが完了したら、ブラウザで以下のURLにアクセスしてみて下さい。
 `https://${docker_host}/inheritance?date=20201024&codes=1301`
 
+### 株価取得
+
+Railsコンソール起動
+```sh
+rake rails:c
+```
+以下のようにして試すことが出来ます。
+```rb
+f = Stocks::StockPriceFinder.new
+f.get_stock_price_by_date '1301', Date.new(2021,10,15)
+```
+
+### curl コマンドでテストする場合
+POSTで /inheritance を呼んで下さい。
+パラメータとして、`codes` `date` が必須です。
+
+実行例:
+```sh
+curl -X POST --data-urlencode 'codes=1301' --data-urlencode 'date=2021-10-01' http://localhost:8079/inheritance
+```
+
 ## コンテナへのアタッチ方法
 
 起動中のコンテナの中へ入ってシェルを使用したい場合などは、`rake rails:bash` コマンドを使います。
 スーパーユーザでのシェルが必要な場合は、`rake rails:root_bash` コマンドを使って下さい。
 
-他にも様々な構成間利用の Rake タスクが定義されています。
+他にも様々な構成管理用の Rake タスクが定義されています。
 `rake -T` としてどんなコマンドが利用可能か確認してみてください。
 
 ### 例1: Rails のデバッグ起動
