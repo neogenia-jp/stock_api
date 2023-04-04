@@ -50,7 +50,7 @@ class Scraping::StockPriceScraper < BaseService
   # @return [Enumerator<Array<String>>]  [日付, 終値, 調整後終値]の配列 例: [['2020年11月9日', '250', '125'], ...]
   def _extract_stock_prices(document)
     Enumerator.new do |y|
-      rows = document.css('table._13C_m5Hxv tbody tr')
+      rows = document.css('table._13C_m5Hx tbody tr')
       last_ymd = nil
       rows.reverse_each do |tr|
         ymd = tr.css('th').text
