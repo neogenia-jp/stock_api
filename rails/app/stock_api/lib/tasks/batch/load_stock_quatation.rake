@@ -29,7 +29,30 @@ namespace :batch do
           end
 
           sh "head -2 #{cache_path} | tail -1 > csv_head"
-          sh "grep '^#{yyyymm[0...4]}' #{cache_path} > csv_body"
+
+          #sh "grep '^#{yyyymm[0...4]}' #{cache_path} > csv_body"
+          # 一行になってて欲しいレコードが途中で改行されることがあるため、grepではなく自力で必要な行を抽出
+          File.open cache_path do |f0|
+            File.open "csv_body", "w" do |f1|
+              mark = yyyymm[0...4]
+              start_line1 = false
+              output_flg = flg = false
+              f0.each_line do |l|
+                l.strip!
+                start_line = l.start_with? mark
+                if start_line
+                  f1.puts if flg
+                  flg = true
+                  output_flg = true
+                elsif l.include? 'Copyright'
+                  output_flg = false
+                end
+                f1.print l.chomp, ' ' if output_flg
+                start_line1 = start_line
+              end
+            end
+          end
+
           sh "cat csv_head csv_body | sed -e 's/,//g' -e 's/ /,/g' > st.csv"
 
           logger.info "importing ..."
