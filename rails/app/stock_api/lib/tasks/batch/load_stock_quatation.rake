@@ -47,7 +47,7 @@ namespace :batch do
                 elsif l.include? 'Copyright'
                   output_flg = false
                 end
-                f1.print l.chomp, ' ' if output_flg
+                f1.print l.chomp if output_flg
                 start_line1 = start_line
               end
             end
