@@ -14,7 +14,8 @@ namespace :batch do
       end
 
       sc = Scraping::JpxStatisticsScraper.new
-      sc.get_st_links(yyyymm).each do |url|
+      url = sc.get_st_links(yyyymm).first
+      begin
         pdf_name = File.basename url
         cache_path = "/var/tmp/#{pdf_name}.txt"
 
