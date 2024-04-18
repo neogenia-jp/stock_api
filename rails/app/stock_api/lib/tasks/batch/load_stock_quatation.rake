@@ -38,17 +38,25 @@ namespace :batch do
               mark = yyyymm[0...4]
               start_line1 = false
               output_flg = flg = false
+              field_count = 0
               f0.each_line do |l|
                 l.strip!
+
                 start_line = l.start_with? mark
                 if start_line
                   f1.puts if flg
                   flg = true
+                  field_count = 0
                   output_flg = true
                 elsif l.include? 'Copyright'
                   output_flg = false
                 end
-                f1.print l.chomp if output_flg
+
+                field_count += l.count(' ') + 1  # フィールドの数
+                if output_flg
+                  f1.print ' ' if !start_line && field_count <= 12  # フィールドが12以下なら、途中で切れていないので区切り文字を追加出力
+                  f1.print l
+                end
                 start_line1 = start_line
               end
             end
