@@ -14,7 +14,8 @@ namespace :batch do
       end
 
       sc = Scraping::JpxStatisticsScraper.new
-      sc.get_st_links(yyyymm).each do |url|
+      url = sc.get_st_links(yyyymm).first
+      begin
         pdf_name = File.basename url
         cache_path = "/var/tmp/#{pdf_name}.txt"
 
@@ -35,20 +36,25 @@ namespace :batch do
           File.open cache_path do |f0|
             File.open "csv_body", "w" do |f1|
               mark = yyyymm[0...4]
-              start_line1 = false
-              output_flg = flg = false
+              output_flg = false
+              field_count = 0
               f0.each_line do |l|
                 l.strip!
+
                 start_line = l.start_with? mark
                 if start_line
-                  f1.puts if flg
-                  flg = true
+                  f1.puts if field_count > 0
+                  field_count = 0
                   output_flg = true
                 elsif l.include? 'Copyright'
                   output_flg = false
                 end
-                f1.print l.chomp if output_flg
-                start_line1 = start_line
+
+                field_count += l.count(' ') + 1  # フィールドの数
+                if output_flg
+                  f1.print ' ' if !start_line && field_count <= 12  # フィールドが12以下なら、途中で切れていないので区切り文字を追加出力
+                  f1.print l
+                end
               end
             end
           end
