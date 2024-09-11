@@ -58,7 +58,7 @@ class Importers::QuotationImporter
             close_day: data[idx_close_day],
             avg_closing: data['終値平均']
           )
-        next if model.avg_closing.blank?  # 終値平均がないデータは無視
+        next unless model.valid?  # バリデーションが通らないデータは無視
         y.yield model
       end
     end

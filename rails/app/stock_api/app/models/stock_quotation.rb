@@ -1,6 +1,11 @@
 class StockQuotation < ApplicationRecord
   self.primary_key = [:code, :m, :open_day]
 
+  # open_day は 1〜31 のみ入力可とする
+  validates :open_day, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 31 }
+  # avg_closing は必須とする
+  validates :avg_closing, presence: true
+
   scope :code_and_month, -> (code, month) do
     where(code: code).where(m: month)
   end
